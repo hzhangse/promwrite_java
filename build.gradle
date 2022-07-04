@@ -1,0 +1,65 @@
+group = 'com.hzhangse'
+version = '0.0.1'
+description = 'Prometheus Remote Write Client For java language'
+
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'maven-publish'
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
+    }
+}
+
+dependencies {
+    compile 'com.google.protobuf:protobuf-java:3.8.0'
+    compile 'org.xerial.snappy:snappy-java:1.1.7.3'
+    compile 'com.squareup.okhttp3:okhttp:3.14.2'
+    testCompile 'junit:junit:4.12'
+}
+
+protobuf {
+    generatedFilesBaseDir = "$projectDir/src"
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.8.0'
+    }
+}
+apply plugin: 'maven'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                groupId 'com.hzhangse'
+                artifactId 'promremotewrite'
+                version '0.0.1'
+            }
+             repository(url: uri("~/.m2/repository"))
+        }
+    }
+}
+
+
+publishing {
+    repositories {
+        maven {
+            name = 'localRepo'
+            url = "file://${buildDir}/repo"
+        }
+    }
+    publications {
+        myApp(MavenPublication) {
+            groupId = 'com.hzhangse'
+            artifactId = 'promremotewrite'
+            version = '0.0.1'
+
+        }
+    }
+}
